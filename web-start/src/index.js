@@ -124,7 +124,7 @@ function isUserSignedIn() {
 async function saveMessage(messageText, continousCheck) {
   // Add a new message entry to the Firebase database.
   try {
-    await addDoc(collection(getFirestore(), getUserName()), {
+    await addDoc(collection(getFirestore(), getUserName(), 'Profile', 'Pushups'), {
       quantity: messageText,
       continous: continousCheck,
       timestamp: serverTimestamp()
