@@ -90,6 +90,7 @@ import * as firebaseui from 'firebaseui';
 async function signInEmail() {
   ui.start('#firebaseui-auth-container', uiConfig);
   signOutButtonElement.removeAttribute('hidden');
+  profileButtonElement.removeAttribute('hidden');
 }
 
 // Signs-out of Friendly Chat.
@@ -97,6 +98,7 @@ function signOutUser() {
   // Sign out of Firebase.
   signOut(getAuth());
   signOutButtonElement.setAttribute('hidden', 'true');
+  profileButtonElement.setAttribute('hidden', 'true');
 }
 
 // Initialize firebase auth
@@ -120,11 +122,26 @@ function isUserSignedIn() {
   return !!getAuth().currentUser;
 }
 
+
+async function saveProfile(age, sex) {
+  // Add a new message entry to the Firebase database.
+  try {
+    await setDoc(doc(getFirestore(), getUserName(),'Profile'), {
+      age: age,
+      sex: sex,
+      timestamp: serverTimestamp()
+    });
+  }
+  catch(error) {
+    console.error('Error writing new message to Firebase Database', error);
+  }
+}
+
 // Saves a new message to Cloud Firestore.
 async function saveMessage(messageText, continousCheck) {
   // Add a new message entry to the Firebase database.
   try {
-    await addDoc(collection(getFirestore(), getUserName(), 'Profile', 'Pushups'), {
+    await addDoc(collection(getFirestore(), getUserName()), {
       quantity: messageText,
       continous: continousCheck,
       timestamp: serverTimestamp()
@@ -180,6 +197,22 @@ function onMediaFileSelected(event) {
 }
 
 // Triggered when the send new message form is submitted.
+function onProfileSubmit(e) {
+  e.preventDefault();
+  // Check that the user entered a message and is signed in.
+  if ((ageInputElement.value || sexInputElement.value) && checkSignedInWithMessage()) {
+    messageInputElement.value == 55;
+    messageInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+    saveProfile(ageInputElement.value, sexInputElement.value).then(function () {
+      resetMaterialTextfield(ageInputElement);
+      resetMaterialTextfield(sexInputElement);
+      toggleProfileForm();
+    });
+  }
+}
+
+
+// Triggered when the send new message form is submitted.
 function onMessageFormSubmit(e) {
   e.preventDefault();
   // Check that the user entered a message and is signed in.
@@ -221,6 +254,7 @@ function authStateObserver(user) {
     userNameElement.removeAttribute('hidden');
     userPicElement.removeAttribute('hidden');
     signOutButtonElement.removeAttribute('hidden');
+    profileButtonElement.removeAttribute('hidden');
 
     // Hide sign-in button.
     signInEmailButtonElement.setAttribute('hidden', 'true');
@@ -233,6 +267,7 @@ function authStateObserver(user) {
     userNameElement.setAttribute('hidden', 'true');
     userPicElement.setAttribute('hidden', 'true');
     signOutButtonElement.setAttribute('hidden', 'true');
+    profileButtonElement.setAttribute('hidden', 'true');
 
     // Show sign-in button.
     signInEmailButtonElement.removeAttribute('hidden');
@@ -377,34 +412,60 @@ function toggleButton() {
   }
 }
 
+function toggleProfileButton() {
+  if (ageInputElement.value || sexInputElement.value) {
+    submitProfileButtonElement.removeAttribute('disabled');
+  } else {
+    subminProfileButtonElement.setAttribute('disabled', 'true');
+  }
+}
+
+function toggleProfileForm() {
+  if (profileFormElement.getAttribute('hidden') == null) {
+    profileFormElement.setAttribute('hidden', 'true');
+    messageInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+  } else {
+    profileFormElement.removeAttribute('hidden');
+    messageInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+  }
+}
+
 // Shortcuts to DOM Elements.
 var messageListElement = document.getElementById('messages');
 var messageFormElement = document.getElementById('message-form');
 var messageInputElement = document.getElementById('message');
 var messageContinousValue = document.getElementById('continous');
 var submitButtonElement = document.getElementById('submit');
-var imageButtonElement = document.getElementById('submitImage');
 var imageFormElement = document.getElementById('image-form');
-var mediaCaptureElement = document.getElementById('mediaCapture');
 var userPicElement = document.getElementById('user-pic');
 var userNameElement = document.getElementById('user-name');
-//var signInButtonElement = document.getElementById('sign-in');
 var signOutButtonElement = document.getElementById('sign-out');
 var signInSnackbarElement = document.getElementById('must-signin-snackbar');
 var signInEmailButtonElement = document.getElementById('sign-inEmail');
 var responseFormElement = document.getElementById('response-form');
 var responseMoreButtonElement = document.getElementById('more');
+var ageInputElement = document.getElementById('age');
+var sexInputElement = document.getElementById('sex');
+var submitProfileButtonElement = document.getElementById('submitProfile');
+var profileFormElement = document.getElementById('profile-form');
+var profileButtonElement = document.getElementById('profile');
 
 // Saves message on form submit.
 messageFormElement.addEventListener('submit', onMessageFormSubmit);
 signOutButtonElement.addEventListener('click', signOutUser);
-//signInButtonElement.addEventListener('click', signIn);
 signInEmailButtonElement.addEventListener('click', signInEmail);
 responseMoreButtonElement.addEventListener('click', registerMore);
+submitProfileButtonElement.addEventListener('click', onProfileSubmit);
+profileButtonElement.addEventListener('click', toggleProfileForm);
 
 // Toggle for the button.
 messageInputElement.addEventListener('keyup', toggleButton);
 messageInputElement.addEventListener('change', toggleButton);
+
+ageInputElement.addEventListener('keyup', toggleProfileButton);
+ageInputElement.addEventListener('change', toggleProfileButton);
+sexInputElement.addEventListener('keyup', toggleProfileButton);
+sexInputElement.addEventListener('change', toggleProfileButton);
 
 // Events for image upload.
 //imageButtonElement.addEventListener('click', function (e) {

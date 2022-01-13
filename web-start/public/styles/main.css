@@ -207,3 +207,6 @@ main, #messages-card {
   top: -1px;
   margin-right: 5px;
 }
+h1.firebaseui-title {
+  font-size: 20px;
+}

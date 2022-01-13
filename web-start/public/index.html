@@ -17,7 +17,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="Learn how to use the Firebase platform on the Web">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Friendly Chat</title>
+  <title>#Challenge2022</title>
 
   <!-- Disable tap highlight on IE -->
   <meta name="msapplication-tap-highlight" content="no">
@@ -27,13 +27,13 @@
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="Friendly Chat">
+  <meta name="application-name" content="#Challenge2022">
   <meta name="theme-color" content="#303F9F">
 
   <!-- Add to homescreen for Safari on iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Friendly Chat">
+  <meta name="apple-mobile-web-app-title" content="#Challenge2022">
   <meta name="apple-mobile-web-app-status-bar-style" content="#303F9F">
 
   <!-- Tile icon for Win8 -->
@@ -65,8 +65,9 @@
       <div id="user-container">
         <div hidden id="user-pic"></div>
         <div hidden id="user-name"></div>
-        <button hidden id="sign-out" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white" data-upgraded=",MaterialRipple">
-          Sign-out
+        
+        <button hidden id="profile" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white" data-upgraded=",MaterialRipple">
+          Profile
           <span class="">
             <span class="mdl-ripple"></span>
           </span> 
@@ -76,6 +77,12 @@
         </button-->
         <button id="sign-inEmail" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white" data-upgraded=",MaterialRipple">
           <i class="material-icons">account_circle</i>Sign-in
+          <span class="">
+            <span class="mdl-ripple"></span>
+          </span> 
+        </button>
+        <button hidden id="sign-out" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white" data-upgraded=",MaterialRipple">
+          Sign-out
           <span class="">
             <span class="mdl-ripple"></span>
           </span> 
@@ -91,7 +98,6 @@
       <div id="messages-card" class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--6-col-tablet mdl-cell--6-col-desktop">
         
         <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-          
           <form id="message-form" action="#">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
               <input class="mdl-textfield__input" type="text" pattern = "-?[0-9]*(\.[0-9]+)?" id="message" autocomplete="off">
@@ -122,9 +128,27 @@
             </button>
           </form>
         </div>
+
         <div id="messages">
-            <section id="firebaseui-auth-container"></section>
-          </div>
+          <form hidden id="profile-form" action="#">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input class="mdl-textfield__input" type="text" pattern = "-?[0-9]*(\.[0-9]+)?" id="age" autocomplete="off">
+              <label class="mdl-textfield__label" for="age">Age</label>
+              <span class = "mdl-textfield__error">Number required!</span>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="sex" autocomplete="off">
+              <label class="mdl-textfield__label" for="sex">Sex</label>
+            </div>
+            <button id="submitProfile" disabled type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" data-upgraded=",MaterialRipple">
+              Update
+              <span class="">
+                <span class="mdl-ripple"></span>
+              </span> 
+            </button>
+          </form>
+          <section id="firebaseui-auth-container"></section>
+        </div>
          
       </div>
       
