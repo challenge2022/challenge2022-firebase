@@ -40,7 +40,7 @@ async function signInEmail() {
   signOutButtonElement.removeAttribute('hidden');
 }
 
-// Signs-out of Friendly Chat.
+// Signs-out of Challenge2022.
 function signOutUser() {
   // Sign out of Firebase.
   signOut(getAuth());
@@ -66,47 +66,6 @@ function getUserName() {
 // Returns true if a user is signed-in.
 function isUserSignedIn() {
   return !!getAuth().currentUser;
-}
-
-// Saves a new message to Cloud Firestore.
-async function saveMessage(messageText, continousCheck) {
-  // Add a new message entry to the Firebase database.
-  try {
-    await addDoc(collection(getFirestore(), getUserName()), {
-      quantity: messageText,
-      continous: continousCheck,
-      timestamp: serverTimestamp()
-    });
-  }
-  catch(error) {
-    console.error('Error writing new message to Firebase Database', error);
-  }
-}
-
-
-// Triggered when the send new message form is submitted.
-function onMessageFormSubmit(e) {
-  e.preventDefault();
-  // Check that the user entered a message and is signed in.
-  if (messageInputElement.value && checkSignedInWithMessage()) {
-    saveMessage(messageInputElement.value, messageContinousValue.checked).then(function () {
-      // Clear message text field and re-enable the SEND button.
-      resetMaterialTextfield(messageInputElement);
-      messageFormElement.setAttribute('hidden', true);
-      responseFormElement.removeAttribute('hidden');
-      responseMoreButtonElement.removeAttribute('disabled');
-      messageContinousValue.setAttribute('disabled', true);
-    });
-  }
-}
-
-function registerMore(e) {
-  e.preventDefault();
-  responseMoreButtonElement.setAttribute('disabled', true);
-  responseFormElement.setAttribute('hidden', true);
-  messageFormElement.removeAttribute('hidden');
-  messageContinousValue.removeAttribute('disabled');
-  toggleButton();
 }
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
@@ -160,6 +119,60 @@ function checkSignedInWithMessage() {
   return false;
 }
 
+
+
+
+// Saves a new message to Cloud Firestore.
+async function saveMessage(messageText, continousCheck) {
+  // Add a new message entry to the Firebase database.
+  try {
+    await addDoc(collection(getFirestore(), getUserName()), {
+      quantity: messageText,
+      continous: continousCheck,
+      timestamp: serverTimestamp()
+    });
+  }
+  catch(error) {
+    console.error('Error writing new message to Firebase Database', error);
+  }
+}
+
+
+// Triggered when the send new message form is submitted.
+function onMessageFormSubmit(e) {
+  e.preventDefault();
+  // Check that the user entered a message and is signed in.
+  if (messageInputElement.value && checkSignedInWithMessage()) {
+    saveMessage(messageInputElement.value, messageContinousValue.checked).then(function () {
+      // Clear message text field and re-enable the SEND button.
+      resetMaterialTextfield(messageInputElement);
+      messageFormElement.setAttribute('hidden', true);
+      responseFormElement.removeAttribute('hidden');
+      responseMoreButtonElement.removeAttribute('disabled');
+      messageContinousValue.setAttribute('disabled', true);
+    });
+  }
+}
+
+function registerMore(e) {
+  e.preventDefault();
+  responseMoreButtonElement.setAttribute('disabled', true);
+  responseFormElement.setAttribute('hidden', true);
+  messageFormElement.removeAttribute('hidden');
+  messageContinousValue.removeAttribute('disabled');
+  toggleButton();
+}
+
+// Enables or disables the submit button depending on the values of the input
+// fields.
+function toggleButton() {
+  if (messageInputElement.value) {
+    submitButtonElement.removeAttribute('disabled');
+  } else {
+    submitButtonElement.setAttribute('disabled', 'true');
+  }
+}
+
 // Resets the given MaterialTextField.
 function resetMaterialTextfield(element) {
   element.value = '';
@@ -175,28 +188,8 @@ var MESSAGE_TEMPLATE =
   '<div class="name"></div>' +
   '</div>';
 
-// Adds a size to Google Profile pics URLs.
-function addSizeToGoogleProfilePic(url) {
-  if (url.indexOf('googleusercontent.com') !== -1 && url.indexOf('?') === -1) {
-    return url + '?sz=150';
-  }
-  return url;
-}
-
-// A loading image URL.
-var LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif?a';
 
 
-
-// Enables or disables the submit button depending on the values of the input
-// fields.
-function toggleButton() {
-  if (messageInputElement.value) {
-    submitButtonElement.removeAttribute('disabled');
-  } else {
-    submitButtonElement.setAttribute('disabled', 'true');
-  }
-}
 
 // Shortcuts to DOM Elements.
 var messageListElement = document.getElementById('messages');
