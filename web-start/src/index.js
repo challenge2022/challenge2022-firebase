@@ -19,8 +19,6 @@ import { initializeApp } from 'firebase/app';
 import {
   getAuth,
   onAuthStateChanged,
-  //GoogleAuthProvider,
-  signInWithPopup,
   signOut,
   EmailAuthProvider
 } from 'firebase/auth';
@@ -28,64 +26,14 @@ import {
   getFirestore,
   collection,
   addDoc,
-  query,
-  orderBy,
-  limit,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-  doc,
   serverTimestamp,
 } from 'firebase/firestore';
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from 'firebase/storage';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
-import { getPerformance } from 'firebase/performance';
+
 
 import { getFirebaseConfig } from './firebase-config.js';
 
 import * as firebaseui from 'firebaseui';
 
-// Signs-in Friendly Chat.
-//async function signIn() {
-  // Sign in Firebase using popup auth and Google as the identity provider.
-  //signOutButtonElement.removeAttribute('hidden');
-  //const provider = new GoogleAuthProvider();
-//provider.addScope('profile');
-//provider.addScope('email');
-//const result = 
-//await signInWithPopup(getAuth(), provider);
-
-// The signed-in user info.
-//const user = result.user;
-// This gives you a Google Access Token.
-//const credential = GoogleAuthProvider.credentialFromResult(result);
-//const token = credential.accessToken;
-
-// Sign in using a redirect.
-//const provider = new GoogleAuthProvider();
-// Start a sign in process for an unauthenticated user.
-//provider.addScope('profile');
-//provider.addScope('email');
-//await signInWithRedirect(getAuth(), provider);
-// This will trigger a full page redirect away from your app
-
-// After returning from the redirect when your app initializes you can obtain the result
-//const result = 
-//await getRedirectResult(getAuth());
-//if (result) {
-  // This is the signed-in user
-  //const user = result.user;
-  // This gives you a Google Access Token.
-  //const credential = GoogleAuthProvider.credentialFromResult(result);
-  //const token = credential.accessToken;
-//}
-
-//}
 
 async function signInEmail() {
   ui.start('#firebaseui-auth-container', uiConfig);
@@ -93,7 +41,7 @@ async function signInEmail() {
   profileButtonElement.removeAttribute('hidden');
 }
 
-// Signs-out of Friendly Chat.
+// Signs-out of Challenge2022.
 function signOutUser() {
   // Sign out of Firebase.
   signOut(getAuth());
@@ -152,57 +100,11 @@ async function saveMessage(messageText, continousCheck) {
   }
 }
 
-// Loads chat messages history and listens for upcoming ones.
-function loadMessages() {
-  // TODO 8: Load and listen for new messages.
-}
-
-// Saves a new message containing an image in Firebase.
-// This first saves the image in Firebase storage.
-async function saveImageMessage(file) {
-  // TODO 9: Posts a new image as a message.
-}
-
-// Saves the messaging device token to Cloud Firestore.
-async function saveMessagingDeviceToken() {
-  // TODO 10: Save the device token in Cloud Firestore
-}
-
-// Requests permissions to show notifications.
-async function requestNotificationsPermissions() {
-  // TODO 11: Request permissions to send notifications.
-}
-
-// Triggered when a file is selected via the media picker.
-function onMediaFileSelected(event) {
-  event.preventDefault();
-  var file = event.target.files[0];
-
-  // Clear the selection in the file picker input.
-  imageFormElement.reset();
-
-  // Check if the file is an image.
-  if (!file.type.match('image.*')) {
-    var data = {
-      message: 'You can only share images',
-      timeout: 2000,
-    };
-    signInSnackbarElement.MaterialSnackbar.showSnackbar(data);
-    return;
-  }
-  // Check if the user is signed-in
-  if (checkSignedInWithMessage()) {
-    saveImageMessage(file);
-  }
-}
-
 // Triggered when the send new message form is submitted.
 function onProfileSubmit(e) {
   e.preventDefault();
   // Check that the user entered a message and is signed in.
   if ((ageInputElement.value || sexInputElement.value) && checkSignedInWithMessage()) {
-    messageInputElement.value == 55;
-    messageInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
     saveProfile(ageInputElement.value, sexInputElement.value).then(function () {
       resetMaterialTextfield(ageInputElement);
       resetMaterialTextfield(sexInputElement);
@@ -290,116 +192,48 @@ function checkSignedInWithMessage() {
   return false;
 }
 
-// Resets the given MaterialTextField.
-function resetMaterialTextfield(element) {
-  element.value = '';
-  element.parentNode.MaterialTextfield.boundUpdateClassesHandler();
-}
 
 
-// Template for messages.
-var MESSAGE_TEMPLATE =
-  '<div class="message-container">' +
-  '<div class="spacing"><div class="pic"></div></div>' +
-  '<div class="message"></div>' +
-  '<div class="name"></div>' +
-  '</div>';
 
-// Adds a size to Google Profile pics URLs.
-function addSizeToGoogleProfilePic(url) {
-  if (url.indexOf('googleusercontent.com') !== -1 && url.indexOf('?') === -1) {
-    return url + '?sz=150';
-  }
-  return url;
-}
-
-// A loading image URL.
-var LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif?a';
-
-// Delete a Message from the UI.
-function deleteMessage(id) {
-  var div = document.getElementById(id);
-  // If an element for that message exists we delete it.
-  if (div) {
-    div.parentNode.removeChild(div);
-  }
-}
-
-function createAndInsertMessage(id, timestamp) {
-  const container = document.createElement('div');
-  container.innerHTML = MESSAGE_TEMPLATE;
-  const div = container.firstChild;
-  div.setAttribute('id', id);
-
-  // If timestamp is null, assume we've gotten a brand new message.
-  // https://stackoverflow.com/a/47781432/4816918
-  timestamp = timestamp ? timestamp.toMillis() : Date.now();
-  div.setAttribute('timestamp', timestamp);
-
-  // figure out where to insert new message
-  const existingMessages = messageListElement.children;
-  if (existingMessages.length === 0) {
-    messageListElement.appendChild(div);
-  } else {
-    let messageListNode = existingMessages[0];
-
-    while (messageListNode) {
-      const messageListNodeTime = messageListNode.getAttribute('timestamp');
-
-      if (!messageListNodeTime) {
-        throw new Error(
-          `Child ${messageListNode.id} has no 'timestamp' attribute`
-        );
-      }
-
-      if (messageListNodeTime > timestamp) {
-        break;
-      }
-
-      messageListNode = messageListNode.nextSibling;
-    }
-
-    messageListElement.insertBefore(div, messageListNode);
-  }
-
-  return div;
-}
-
-// Displays a Message in the UI.
-function displayMessage(id, timestamp, name, text, picUrl, imageUrl) {
-  var div =
-    document.getElementById(id) || createAndInsertMessage(id, timestamp);
-
-  // profile picture
-  if (picUrl) {
-    div.querySelector('.pic').style.backgroundImage =
-      'url(' + addSizeToGoogleProfilePic(picUrl) + ')';
-  }
-
-  div.querySelector('.name').textContent = name;
-  var messageElement = div.querySelector('.message');
-
-  if (text) {
-    // If the message is text.
-    messageElement.textContent = text;
-    // Replace all line breaks by <br>.
-    messageElement.innerHTML = messageElement.innerHTML.replace(/\n/g, '<br>');
-  } else if (imageUrl) {
-    // If the message is an image.
-    var image = document.createElement('img');
-    image.addEventListener('load', function () {
-      messageListElement.scrollTop = messageListElement.scrollHeight;
+// Saves a new message to Cloud Firestore.
+async function saveMessage(messageText, continousCheck) {
+  // Add a new message entry to the Firebase database.
+  try {
+    await addDoc(collection(getFirestore(), getUserName()), {
+      quantity: messageText,
+      continous: continousCheck,
+      timestamp: serverTimestamp()
     });
-    image.src = imageUrl + '&' + new Date().getTime();
-    messageElement.innerHTML = '';
-    messageElement.appendChild(image);
   }
-  // Show the card fading-in and scroll to view the new message.
-  setTimeout(function () {
-    div.classList.add('visible');
-  }, 1);
-  messageListElement.scrollTop = messageListElement.scrollHeight;
-  messageInputElement.focus();
+  catch(error) {
+    console.error('Error writing new message to Firebase Database', error);
+  }
+}
+
+
+// Triggered when the send new message form is submitted.
+function onMessageFormSubmit(e) {
+  e.preventDefault();
+  // Check that the user entered a message and is signed in.
+  if (messageInputElement.value && checkSignedInWithMessage()) {
+    saveMessage(messageInputElement.value, messageContinousValue.checked).then(function () {
+      // Clear message text field and re-enable the SEND button.
+      resetMaterialTextfield(messageInputElement);
+      messageFormElement.setAttribute('hidden', true);
+      responseFormElement.removeAttribute('hidden');
+      responseMoreButtonElement.removeAttribute('disabled');
+      messageContinousValue.setAttribute('disabled', true);
+    });
+  }
+}
+
+function registerMore(e) {
+  e.preventDefault();
+  responseMoreButtonElement.setAttribute('disabled', true);
+  responseFormElement.setAttribute('hidden', true);
+  messageFormElement.removeAttribute('hidden');
+  messageContinousValue.removeAttribute('disabled');
+  toggleButton();
 }
 
 // Enables or disables the submit button depending on the values of the input
@@ -429,6 +263,23 @@ function toggleProfileForm() {
     messageInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
   }
 }
+// Resets the given MaterialTextField.
+function resetMaterialTextfield(element) {
+  element.value = '';
+  element.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+}
+
+
+// Template for messages.
+var MESSAGE_TEMPLATE =
+  '<div class="message-container">' +
+  '<div class="spacing"><div class="pic"></div></div>' +
+  '<div class="message"></div>' +
+  '<div class="name"></div>' +
+  '</div>';
+
+
+
 
 // Shortcuts to DOM Elements.
 var messageListElement = document.getElementById('messages');
@@ -436,7 +287,6 @@ var messageFormElement = document.getElementById('message-form');
 var messageInputElement = document.getElementById('message');
 var messageContinousValue = document.getElementById('continous');
 var submitButtonElement = document.getElementById('submit');
-var imageFormElement = document.getElementById('image-form');
 var userPicElement = document.getElementById('user-pic');
 var userNameElement = document.getElementById('user-name');
 var signOutButtonElement = document.getElementById('sign-out');
@@ -467,19 +317,9 @@ ageInputElement.addEventListener('change', toggleProfileButton);
 sexInputElement.addEventListener('keyup', toggleProfileButton);
 sexInputElement.addEventListener('change', toggleProfileButton);
 
-// Events for image upload.
-//imageButtonElement.addEventListener('click', function (e) {
-  //e.preventDefault();
-  //mediaCaptureElement.click();
-//});
-//mediaCaptureElement.addEventListener('change', onMediaFileSelected);
 
-// TODO 0: Initialize Firebase
 const firebaseAppConfig = getFirebaseConfig();
 initializeApp(firebaseAppConfig);
-//auth = getAuth();
-
-// TODO 12: Initialize Firebase Performance Monitoring
 
 initFirebaseAuth();
 
@@ -500,4 +340,3 @@ initFirebaseAuth();
   };
 
   const ui = new firebaseui.auth.AuthUI(getAuth());
-//loadMessages();
