@@ -27,6 +27,8 @@ import {
   collection,
   addDoc,
   serverTimestamp,
+  setDoc,
+  doc
 } from 'firebase/firestore';
 
 
@@ -65,6 +67,10 @@ function getUserName() {
   return getAuth().currentUser.displayName;
 }
 
+function getUserMail() {
+  return getAuth().currentUser.email;
+}
+
 // Returns true if a user is signed-in.
 function isUserSignedIn() {
   return !!getAuth().currentUser;
@@ -74,10 +80,11 @@ function isUserSignedIn() {
 async function saveProfile(age, sex) {
   // Add a new message entry to the Firebase database.
   try {
-    await setDoc(doc(getFirestore(), getUserName(),'Profile'), {
+    await setDoc(doc(getFirestore(), getUserMail(),'Profile'), {
       age: age,
       sex: sex,
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp(),
+      name: getUserName()
     });
   }
   catch(error) {
@@ -89,10 +96,11 @@ async function saveProfile(age, sex) {
 async function saveMessage(messageText, continousCheck) {
   // Add a new message entry to the Firebase database.
   try {
-    await addDoc(collection(getFirestore(), getUserName()), {
+    await addDoc(collection(getFirestore(), getUserMail()), {
       quantity: messageText,
       continous: continousCheck,
-      timestamp: serverTimestamp()
+      timestamp: serverTimestamp(),
+      name: getUserName()
     });
   }
   catch(error) {
