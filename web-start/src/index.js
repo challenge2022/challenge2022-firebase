@@ -108,7 +108,7 @@ function onProfileSubmit(e) {
     saveProfile(ageInputElement.value, sexInputElement.value).then(function () {
       resetMaterialTextfield(ageInputElement);
       resetMaterialTextfield(sexInputElement);
-      toggleProfileForm();
+      hideProfile();
     });
   }
 }
@@ -122,21 +122,16 @@ function onMessageFormSubmit(e) {
     saveMessage(messageInputElement.value, messageContinousValue.checked).then(function () {
       // Clear message text field and re-enable the SEND button.
       resetMaterialTextfield(messageInputElement);
-      messageFormElement.setAttribute('hidden', true);
-      responseFormElement.removeAttribute('hidden');
-      responseMoreButtonElement.removeAttribute('disabled');
-      messageContinousValue.setAttribute('disabled', true);
+      hideRegistration();
+      showRegistered();
     });
   }
 }
 
 function registerMore(e) {
   e.preventDefault();
-  responseMoreButtonElement.setAttribute('disabled', true);
-  responseFormElement.setAttribute('hidden', true);
-  messageFormElement.removeAttribute('hidden');
-  messageContinousValue.removeAttribute('disabled');
-  toggleButton();
+  hideRegistered();
+  showRegistration();
 }
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
@@ -149,7 +144,7 @@ function authStateObserver(user) {
 
     // Set the user's profile pic and name.
     userPicElement.style.backgroundImage =
-      'url(' + addSizeToGoogleProfilePic(profilePicUrl) + ')';
+      'url(' + profilePicUrl + ')';
     userNameElement.textContent = userName;
 
     // Show user's profile and sign-out button.
@@ -162,7 +157,7 @@ function authStateObserver(user) {
     signInEmailButtonElement.setAttribute('hidden', 'true');
 
     // We save the Firebase Messaging Device token and enable notifications.
-    saveMessagingDeviceToken();
+    //saveMessagingDeviceToken();
   } else {
     // User is signed out!
     // Hide user's profile and sign-out button.
@@ -193,49 +188,6 @@ function checkSignedInWithMessage() {
 }
 
 
-
-
-// Saves a new message to Cloud Firestore.
-async function saveMessage(messageText, continousCheck) {
-  // Add a new message entry to the Firebase database.
-  try {
-    await addDoc(collection(getFirestore(), getUserName()), {
-      quantity: messageText,
-      continous: continousCheck,
-      timestamp: serverTimestamp()
-    });
-  }
-  catch(error) {
-    console.error('Error writing new message to Firebase Database', error);
-  }
-}
-
-
-// Triggered when the send new message form is submitted.
-function onMessageFormSubmit(e) {
-  e.preventDefault();
-  // Check that the user entered a message and is signed in.
-  if (messageInputElement.value && checkSignedInWithMessage()) {
-    saveMessage(messageInputElement.value, messageContinousValue.checked).then(function () {
-      // Clear message text field and re-enable the SEND button.
-      resetMaterialTextfield(messageInputElement);
-      messageFormElement.setAttribute('hidden', true);
-      responseFormElement.removeAttribute('hidden');
-      responseMoreButtonElement.removeAttribute('disabled');
-      messageContinousValue.setAttribute('disabled', true);
-    });
-  }
-}
-
-function registerMore(e) {
-  e.preventDefault();
-  responseMoreButtonElement.setAttribute('disabled', true);
-  responseFormElement.setAttribute('hidden', true);
-  messageFormElement.removeAttribute('hidden');
-  messageContinousValue.removeAttribute('disabled');
-  toggleButton();
-}
-
 // Enables or disables the submit button depending on the values of the input
 // fields.
 function toggleButton() {
@@ -250,17 +202,15 @@ function toggleProfileButton() {
   if (ageInputElement.value || sexInputElement.value) {
     submitProfileButtonElement.removeAttribute('disabled');
   } else {
-    subminProfileButtonElement.setAttribute('disabled', 'true');
+    submitProfileButtonElement.setAttribute('disabled', 'true');
   }
 }
 
 function toggleProfileForm() {
-  if (profileFormElement.getAttribute('hidden') == null) {
-    profileFormElement.setAttribute('hidden', 'true');
-    messageInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+  if (profileFormElement.getAttribute('hidden')) {
+    showProfile();
   } else {
-    profileFormElement.removeAttribute('hidden');
-    messageInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+   hideProfile();
   }
 }
 // Resets the given MaterialTextField.
@@ -317,6 +267,35 @@ ageInputElement.addEventListener('change', toggleProfileButton);
 sexInputElement.addEventListener('keyup', toggleProfileButton);
 sexInputElement.addEventListener('change', toggleProfileButton);
 
+
+function showProfile() {
+  profileFormElement.removeAttribute('hidden');
+}
+
+function hideProfile() {
+  profileFormElement.setAttribute('hidden', 'true');
+  submitProfileButtonElement.setAttribute('disabled', 'true');
+}
+
+function showRegistration() {
+  messageFormElement.removeAttribute('hidden');
+  messageContinousValue.removeAttribute('disabled');
+}
+
+function hideRegistration() {
+  messageContinousValue.setAttribute('disabled', true);
+  messageFormElement.setAttribute('hidden', true);
+}
+
+function showRegistered() {
+  responseFormElement.removeAttribute('hidden');
+  responseMoreButtonElement.removeAttribute('disabled');
+}
+
+function hideRegistered() {
+  responseMoreButtonElement.setAttribute('disabled', true);
+  responseFormElement.setAttribute('hidden', true);
+}
 
 const firebaseAppConfig = getFirebaseConfig();
 initializeApp(firebaseAppConfig);
