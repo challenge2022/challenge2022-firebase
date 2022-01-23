@@ -95,8 +95,8 @@
           <form id="message-form" action="#">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
               <input class="mdl-textfield__input" type="text" pattern = "-?[0-9]*(\.[0-9]+)?" id="message" autocomplete="off">
-              <label class="mdl-textfield__label" for="message">Number of push-ups...</label>
-              <span class = "mdl-textfield__error">Number required!</span>
+              <label class="mdl-textfield__label" for="message">Antall push-ups...</label>
+              <span class = "mdl-textfield__error">Kun tall!</span>
               <label class = "mdl-checkbox mdl-js-checkbox" for = "continous">
                 <input type = "checkbox" id = "continous" class = "mdl-checkbox__input" unchecked>
                 <span class = "mdl-checkbox__label">Sammenhengende</span>
@@ -127,12 +127,16 @@
           <form hidden id="profile-form" action="#">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
               <input class="mdl-textfield__input" type="text" pattern = "-?[0-9]*(\.[0-9]+)?" id="age" autocomplete="off">
-              <label class="mdl-textfield__label" for="age">Age</label>
-              <span class = "mdl-textfield__error">Number required!</span>
+              <label class="mdl-textfield__label" for="age">Alder</label>
+              <span class = "mdl-textfield__error">Kun tall!</span>
             </div>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="text" id="sex" autocomplete="off">
-              <label class="mdl-textfield__label" for="sex">Sex</label>
+              <select class="mdl-textfield__input" id="sex" name="sex">
+                <option></option>
+                <option value="M">Mann</option>
+                <option value="F">Kvinne</option>
+              </select>
+              <label class="mdl-textfield__label" for="sex">Kjønn</label>
             </div>
             <button id="submitProfile" disabled type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" data-upgraded=",MaterialRipple">
               Update

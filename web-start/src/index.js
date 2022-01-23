@@ -28,7 +28,8 @@ import {
   addDoc,
   serverTimestamp,
   setDoc,
-  doc
+  doc,
+  getDoc
 } from 'firebase/firestore';
 
 
@@ -47,6 +48,7 @@ async function signInEmail() {
 function signOutUser() {
   // Sign out of Firebase.
   signOut(getAuth());
+  hideProfile();
   signOutButtonElement.setAttribute('hidden', 'true');
   profileButtonElement.setAttribute('hidden', 'true');
 }
@@ -76,6 +78,23 @@ function isUserSignedIn() {
   return !!getAuth().currentUser;
 }
 
+
+async function getProfile() {
+const ref = doc(getFirestore(), getUserMail(),'Profile').withConverter(profileConverter);
+const docSnap = await getDoc(ref);
+if (docSnap.exists()) {
+  // Convert to City object
+  const profile = docSnap.data();
+  ageInputElement.value = profile.age;
+  ageInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+  sexInputElement.value = profile.sex;
+  sexInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+  // Use a City instance method
+  console.log(profile.toString());
+} else {
+  console.log("No such document!");
+}
+}
 
 async function saveProfile(age, sex) {
   // Add a new message entry to the Firebase database.
@@ -114,8 +133,6 @@ function onProfileSubmit(e) {
   // Check that the user entered a message and is signed in.
   if ((ageInputElement.value || sexInputElement.value) && checkSignedInWithMessage()) {
     saveProfile(ageInputElement.value, sexInputElement.value).then(function () {
-      resetMaterialTextfield(ageInputElement);
-      resetMaterialTextfield(sexInputElement);
       hideProfile();
     });
   }
@@ -164,6 +181,8 @@ function authStateObserver(user) {
     // Hide sign-in button.
     signInEmailButtonElement.setAttribute('hidden', 'true');
 
+    getProfile();
+
     // We save the Firebase Messaging Device token and enable notifications.
     //saveMessagingDeviceToken();
   } else {
@@ -176,6 +195,8 @@ function authStateObserver(user) {
 
     // Show sign-in button.
     signInEmailButtonElement.removeAttribute('hidden');
+    resetMaterialTextfield(ageInputElement);
+    resetMaterialTextfield(sexInputElement);
   }
 }
 
@@ -278,6 +299,7 @@ sexInputElement.addEventListener('change', toggleProfileButton);
 
 function showProfile() {
   profileFormElement.removeAttribute('hidden');
+ // getProfile();
 }
 
 function hideProfile() {
@@ -327,3 +349,29 @@ initFirebaseAuth();
   };
 
   const ui = new firebaseui.auth.AuthUI(getAuth());
+
+  class Profile {
+    constructor (name, age, sex ) {
+        this.name = name;
+        this.age = age;
+        this.sex = sex;
+    }
+    toString() {
+        return this.name + ', ' + this.age + ', ' + this.sex;
+    }
+}
+
+// Firestore data converter
+const profileConverter = {
+    toFirestore: (profile) => {
+        return {
+            name: profile.name,
+            state: profile.age,
+            country: profile.sex
+            };
+    },
+    fromFirestore: (snapshot, options) => {
+        const data = snapshot.data(options);
+        return new Profile(data.name, data.age, data.sex);
+    }
+};

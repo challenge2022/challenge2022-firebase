@@ -1,6 +1,6 @@
 {
-  "name": "Friendly Chat",
-  "short_name": "Friendly Chat",
+  "name": "#challenge2022",
+  "short_name": "challenge2022",
   "start_url": "/index.html",
   "display": "standalone",
   "orientation": "portrait"
