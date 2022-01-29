@@ -16,13 +16,13 @@
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const config = {
-  apiKey: "AIzaSyD3M8q_l2iz8SaJ92XcyWkgrfBhKYLv3VA",
-  authDomain: "challenge2020test.firebaseapp.com",
-  projectId: "challenge2020test",
-  storageBucket: "challenge2020test.appspot.com",
-  messagingSenderId: "870118346352",
-  appId: "1:870118346352:web:556db834d631edac9eaeb5",
-  measurementId: "G-J90X6NZRVQ"
+  apiKey: "AIzaSyA04T7-OEjZ9lHxndn4BdBOZU9M1Chcyns",
+  authDomain: "challenge-2022.firebaseapp.com",
+  projectId: "challenge-2022",
+  storageBucket: "challenge-2022.appspot.com",
+  messagingSenderId: "360765442181",
+  appId: "1:360765442181:web:513b020af3bcb4d33c41ec",
+  measurementId: "G-DVCQKBKNN7"
 };
 
 // Initialize Firebase
