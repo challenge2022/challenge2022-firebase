@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+ .mdl-button--raised.mdl-button--colored {
+  background: black;
+  color: white;
+}
+.mdl-button--raised.mdl-button--colored :hover{
+  background: black;
+  color: white;
+}
+ 
  html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
@@ -44,6 +53,9 @@ main, #messages-card {
 .mdl-layout__header-row {
   padding: 0;
   margin: 0 auto;
+}
+.mdl-color--light-blue-700 {
+  background-color: black !important;
 }
 .mdl-card__supporting-text {
   width: auto;
@@ -101,6 +113,22 @@ main, #messages-card {
   font-size: 12px;
   box-sizing: border-box;
 }
+#profile-form{
+  display: flex;
+  flex-direction: column;
+}
+#profile-form .mdl-textfield {
+  width: 100%;
+}
+#profile-form .mdl-textfield__input {
+  color: black;
+}
+.mdl-textfield--floating-label.is-focused .mdl-textfield__label, .mdl-textfield--floating-label.is-dirty .mdl-textfield__label, .mdl-textfield--floating-label.has-placeholder .mdl-textfield__label {
+  color: black;
+  font-size: 12px;
+  top: 4px;
+  visibility: visible;
+}
 #message-form {
   display: flex;
   flex-direction: row;
@@ -113,6 +141,7 @@ main, #messages-card {
   flex-direction: row;
   width: 100%;
   float: left;
+  color: #000000;
 }
 #image-form {
   display: flex;
@@ -120,13 +149,83 @@ main, #messages-card {
   width: 48px;
   float: right;
 }
+#message-form {
+
+  display: flex;
+  flex-direction: row;
+  width: calc(100% - 48px);
+  float: left;
+  border-radius: 10px;
+  box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+-webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+-moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+ 
+}
 #message-form .mdl-textfield {
   width: calc(100% - 100px);
+  
 }
-#message-form button, #image-form button {
+.mdl-textfield__error
+{
+  margin-left: 75%;
+}
+#message-form button, #image-form button, #more {
   width: 100px;
   margin: 15px 0 0 10px;
+  background-color: black;
+  color: white;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: box-shadow .2s,-ms-transform .1s,-webkit-transform .1s,transform .1s;
+  
 }
+#message-form button:hover, #image-form button:hover {
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+#message-form button:active, #image-form button{
+  background-color: #F7F7F7;
+  border-color: #000000;
+  transform: scale(.96);
+}
+
+#submitProfile {
+  width: 100px;
+  margin: 15px 0 0 10px;
+  background-color: black;
+  color: white;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: box-shadow .2s,-ms-transform .1s,-webkit-transform .1s,transform .1s;
+  margin-left: 40%;
+}
+
+#submitProfile:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  transition: box-shadow .2s;
+}
+
+#submitProfile:active {
+  background-color: #F7F7F7;
+  border-color: #000000;
+  transform: scale(.96);
+}
+
+#submitProfile:disabled {
+  border-color: #DDDDDD;
+  color: #DDDDDD;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+
+
+
+
+
+
+
 .mdl-card {
   min-height: 0;
   width: 95%
@@ -168,6 +267,12 @@ main, #messages-card {
   padding: 0 6px 0 1px;
   min-width: 0;
 }
+
+
+
+
+
+
 #image-form #submitImage .material-icons {
   top: -1px;
 }
@@ -185,7 +290,7 @@ main, #messages-card {
   }
   #user-container {
     top: 72px;
-    background-color: rgb(3,155,229);
+    background-color: black;
     height: 38px;
     padding-top: 3px;
     padding-right: 2px;
@@ -196,12 +301,19 @@ main, #messages-card {
     height: 33px;
     background-size: 33px;
   }
+  .mdl-textfield__error
+  {
+    margin-left: 0;
+  }
+#checkedbox{
+  margin-top: 20px;
+}
 }
 .mdl-textfield__label:after {
-  background-color: #0288D1;
+  background-color: black;
 }
 .mdl-textfield--floating-label.is-focused .mdl-textfield__label {
-  color: #0288D1;
+  color: black;
 }
 .mdl-button .material-icons {
   top: -1px;
@@ -209,4 +321,7 @@ main, #messages-card {
 }
 h1.firebaseui-title {
   font-size: 20px;
+}
+#yearlyGoal, #age{
+  margin-left: 4px;
 }

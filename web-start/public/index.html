@@ -97,7 +97,7 @@
               <input class="mdl-textfield__input" type="text" pattern = "-?[0-9]*(\.[0-9]+)?" id="message" autocomplete="off">
               <label class="mdl-textfield__label" for="message">Antall push-ups...</label>
               <span class = "mdl-textfield__error">Kun tall!</span>
-              <label class = "mdl-checkbox mdl-js-checkbox" for = "continous">
+              <label class = "mdl-checkbox mdl-js-checkbox" id="checkedbox"for = "continous">
                 <input type = "checkbox" id = "continous" class = "mdl-checkbox__input" unchecked>
                 <span class = "mdl-checkbox__label">Sammenhengende</span>
              </label>
@@ -129,6 +129,28 @@
               <input class="mdl-textfield__input" type="text" pattern = "-?[0-9]*(\.[0-9]+)?" id="age" autocomplete="off">
               <label class="mdl-textfield__label" for="age">Alder</label>
               <span class = "mdl-textfield__error">Kun tall!</span>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <input class="mdl-textfield__input" type="text"  id="yearlyGoal" autocomplete="off">
+              <label class="mdl-textfield__label" for="yearlyGoal">Årlig mål</label>
+              
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+              <select class="mdl-textfield__input" id="county" name="county">
+                <option></option>
+                <option value="Agder">Agder</option>
+                <option value="Innlandet">Innlandet</option>
+                <option value="Møre og Romsdal">Møre og Romsdal</option>
+                <option value="Nordland">Nordland</option>
+                <option value="Oslo">Oslo</option>
+                <option value="Rogaland">Rogaland</option>
+                <option value="Vestfold og Telemark">Vestfold og Telemark</option>
+                <option value="Troms og Finnmark">Troms og Finnmark</option>
+                <option value="Trøndelag">Trøndelag</option>
+                <option value="Vestland">Vestland</option>
+                <option value="Viken">Viken</option>
+              </select>
+              <label class="mdl-textfield__label" for="county">County</label>
             </div>
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
               <select class="mdl-textfield__input" id="sex" name="sex">
