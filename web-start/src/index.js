@@ -143,6 +143,7 @@ function onProfileSubmit(e) {
       hideProfile();
     });
   }
+  getProfile();
 }
 
 
@@ -245,10 +246,10 @@ function toggleProfileButton() {
 }
 
 function toggleProfileForm() {
-  if (profileFormElement.getAttribute('hidden')) {
-    showProfile();
+  if (!profileFormElement.getAttribute('hidden')) {
+    hideProfile();
   } else {
-   hideProfile();
+   showProfile();
   }
 }
 // Resets the given MaterialTextField.
