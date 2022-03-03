@@ -86,7 +86,12 @@ if (docSnap.exists()) {
   // Convert to City object
   const profile = docSnap.data();
   ageInputElement.value = profile.age;
+  yearlyGoalInputElement.value = profile.yearlyGoal;
+  countyInputElement.value = profile.county;
+  
   ageInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+  yearlyGoalInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
+  countyInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
   sexInputElement.value = profile.sex;
   sexInputElement.parentNode.MaterialTextfield.boundUpdateClassesHandler();
   // Use a City instance method
@@ -96,12 +101,14 @@ if (docSnap.exists()) {
 }
 }
 
-async function saveProfile(age, sex) {
+async function saveProfile(age, sex,yearlyGoal,county) {
   // Add a new message entry to the Firebase database.
   try {
     await setDoc(doc(getFirestore(), getUserMail(),'Profile'), {
       age: age,
       sex: sex,
+      county:county,
+      yearlyGoal:yearlyGoal,
       timestamp: serverTimestamp(),
       name: getUserName()
     });
@@ -131,11 +138,12 @@ async function saveMessage(messageText, continousCheck) {
 function onProfileSubmit(e) {
   e.preventDefault();
   // Check that the user entered a message and is signed in.
-  if ((ageInputElement.value || sexInputElement.value) && checkSignedInWithMessage()) {
-    saveProfile(ageInputElement.value, sexInputElement.value).then(function () {
+  if ((ageInputElement.value || sexInputElement.value|| yearlyGoalInputElement.value || countyInputElement.value ) && checkSignedInWithMessage()) {
+    saveProfile(ageInputElement.value, sexInputElement.value,yearlyGoalInputElement.value, countyInputElement.value).then(function () {
       hideProfile();
     });
   }
+  getProfile();
 }
 
 
@@ -197,6 +205,8 @@ function authStateObserver(user) {
     signInEmailButtonElement.removeAttribute('hidden');
     resetMaterialTextfield(ageInputElement);
     resetMaterialTextfield(sexInputElement);
+    resetMaterialTextfield(yearlyGoalInputElement);
+    resetMaterialTextfield(countyInputElement);
   }
 }
 
@@ -228,7 +238,7 @@ function toggleButton() {
 }
 
 function toggleProfileButton() {
-  if (ageInputElement.value || sexInputElement.value) {
+  if (ageInputElement.value || sexInputElement.value || yearlyGoalInputElement.value || countyInputElement.value) {
     submitProfileButtonElement.removeAttribute('disabled');
   } else {
     submitProfileButtonElement.setAttribute('disabled', 'true');
@@ -236,10 +246,10 @@ function toggleProfileButton() {
 }
 
 function toggleProfileForm() {
-  if (profileFormElement.getAttribute('hidden')) {
-    showProfile();
+  if (!profileFormElement.getAttribute('hidden')) {
+    hideProfile();
   } else {
-   hideProfile();
+   showProfile();
   }
 }
 // Resets the given MaterialTextField.
@@ -275,6 +285,8 @@ var responseFormElement = document.getElementById('response-form');
 var responseMoreButtonElement = document.getElementById('more');
 var ageInputElement = document.getElementById('age');
 var sexInputElement = document.getElementById('sex');
+var countyInputElement = document.getElementById('county');
+var yearlyGoalInputElement = document.getElementById('yearlyGoal');
 var submitProfileButtonElement = document.getElementById('submitProfile');
 var profileFormElement = document.getElementById('profile-form');
 var profileButtonElement = document.getElementById('profile');
@@ -295,6 +307,11 @@ ageInputElement.addEventListener('keyup', toggleProfileButton);
 ageInputElement.addEventListener('change', toggleProfileButton);
 sexInputElement.addEventListener('keyup', toggleProfileButton);
 sexInputElement.addEventListener('change', toggleProfileButton);
+yearlyGoalInputElement.addEventListener('keyup', toggleProfileButton);
+yearlyGoalInputElement.addEventListener('change', toggleProfileButton);
+countyInputElement.addEventListener('keyup', toggleProfileButton);
+countyInputElement.addEventListener('change', toggleProfileButton);
+
 
 
 function showProfile() {
@@ -351,13 +368,15 @@ initFirebaseAuth();
   const ui = new firebaseui.auth.AuthUI(getAuth());
 
   class Profile {
-    constructor (name, age, sex ) {
+    constructor (name, age, sex,yearlyGoal,county ) {
         this.name = name;
         this.age = age;
         this.sex = sex;
+        this.yearlyGoal=yearlyGoal;
+        this.county=county
     }
     toString() {
-        return this.name + ', ' + this.age + ', ' + this.sex;
+        return this.name + ', ' + this.age + ', ' + this.sex+ ', '+this.yearlyGoal+', '+this.county;
     }
 }
 
@@ -367,11 +386,13 @@ const profileConverter = {
         return {
             name: profile.name,
             state: profile.age,
-            country: profile.sex
+            country: profile.sex,
+            county:profile.county,
+            yearlyGoal:profile.yearlyGoal
             };
     },
     fromFirestore: (snapshot, options) => {
         const data = snapshot.data(options);
-        return new Profile(data.name, data.age, data.sex);
+        return new Profile(data.name, data.age, data.sex,data.yearlyGoal,data.county);
     }
 };
